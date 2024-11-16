@@ -1,0 +1,173 @@
+{
+  "swagger": "2.0",
+  "paths": {
+    "/users/create": {
+      "post": {
+        "description": "Create a new user",
+        "tags": [
+          "users"
+        ],
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "description": "User creation request body",
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/createUserResponse"
+          },
+          "400": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      }
+    },
+    "/users/list": {
+      "get": {
+        "description": "Get all users",
+        "tags": [
+          "users"
+        ],
+        "operationId": "getAllUsers",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/getAllUsersResponse"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "description": "Get user by ID",
+        "tags": [
+          "users"
+        ],
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "x-go-name": "UserId",
+            "description": "User ID",
+            "name": "userId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/getUserResponse"
+          },
+          "400": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "404": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      },
+      "put": {
+        "description": "Update user",
+        "tags": [
+          "users"
+        ],
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "x-go-name": "UserId",
+            "description": "User ID",
+            "name": "userId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "User update request body",
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/updateUserResponse"
+          },
+          "400": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "404": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete user",
+        "tags": [
+          "users"
+        ],
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "x-go-name": "UserId",
+            "description": "User ID",
+            "name": "userId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/deleteUserResponse"
+          },
+          "400": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "createUserResponse": {
+      "description": ""
+    },
+    "deleteUserResponse": {
+      "description": ""
+    },
+    "errorResponse": {
+      "description": ""
+    },
+    "getAllUsersResponse": {
+      "description": ""
+    },
+    "getUserResponse": {
+      "description": ""
+    },
+    "updateUserResponse": {
+      "description": ""
+    }
+  }
+}
