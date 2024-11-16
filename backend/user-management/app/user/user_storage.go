@@ -28,7 +28,7 @@ func (s *storage) CreateUser(ctx context.Context, data UserDataPG) error {
 
 func (s *storage) GetUserById(ctx context.Context, id string) (UserDataPG, error) {
 	var data UserDataPG
-	err := s.db.QueryRow(ctx, "select * from users where id = $1", id).Scan(&data)
+	err := s.db.QueryRow(ctx, "select * from users where user_id = $1", id).Scan(&data)
 	return data, err
 }
 

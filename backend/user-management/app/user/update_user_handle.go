@@ -1,8 +1,6 @@
 package user
 
 import (
-	"database/sql"
-	"errors"
 	"net/http"
 	"time"
 	"user-management/app"
@@ -16,6 +14,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 	var req UpdateUserRequest
 	if err := c.ShouldBindUri(&req); err != nil {
 		c.JSON(http.StatusBadRequest, app.Response{
+			Code:    int(app.CodeFailedBadRequest),
 			Message: err.Error(),
 		})
 		return
@@ -23,6 +22,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, app.Response{
+			Code:    int(app.CodeFailedBadRequest),
 			Message: err.Error(),
 		})
 		return
@@ -31,31 +31,48 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(req); err != nil {
 		c.JSON(http.StatusBadRequest, app.Response{
+			Code:    int(app.CodeFailedBadRequest),
 			Message: err.Error(),
 		})
 		return
 	}
 
-	user := "ADMIN"
+	_, err := h.store.GetUserById(c.Request.Context(), req.UserId)
+	if err != nil {
+		if err.Error() == app.ErrorNotFound {
+			c.JSON(http.StatusNotFound, app.Response{
+				Code:    int(app.CodeFailedNotFound),
+				Message: "User not found",
+			})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, app.Response{
+			Code:    int(app.CodeFailedInternal),
+			Message: err.Error(),
+		})
+		return
+	}
+
+	updateUser := "ADMIN"
 	now := time.Now()
 
 	if err := h.store.UpdateUser(c.Request.Context(), UserDataPG{
 		UserId:    uuid.MustParse(req.UserId),
 		UserEmail: req.UserEmail,
 		UserName:  req.UserName,
-		UpdatedBy: &user,
+		UpdatedBy: &updateUser,
 		UpdatedAt: &now,
 	}); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			c.JSON(http.StatusNotFound, app.Response{Message: err.Error()})
-			return
-		}
 
-		c.JSON(http.StatusInternalServerError, app.Response{Message: err.Error()})
+		c.JSON(http.StatusInternalServerError, app.Response{
+			Code:    int(app.CodeFailedInternal),
+			Message: err.Error(),
+		})
 		return
 	}
 
 	c.JSON(http.StatusOK, app.Response{
+		Code:    int(app.CodeSuccess),
 		Message: "updated user successfully",
 	})
 }

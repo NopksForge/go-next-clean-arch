@@ -14,6 +14,7 @@ func (h *Handler) CreateUser(c *gin.Context) {
 	var req CreateUserRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, app.Response{
+			Code:    int(app.CodeFailedBadRequest),
 			Message: err.Error(),
 		})
 		return
@@ -22,6 +23,7 @@ func (h *Handler) CreateUser(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(req); err != nil {
 		c.JSON(http.StatusBadRequest, app.Response{
+			Code:    int(app.CodeFailedBadRequest),
 			Message: err.Error(),
 		})
 		return
@@ -37,12 +39,14 @@ func (h *Handler) CreateUser(c *gin.Context) {
 		CreatedAt: time.Now(),
 	}); err != nil {
 		c.JSON(http.StatusInternalServerError, app.Response{
+			Code:    int(app.CodeFailedInternal),
 			Message: err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, app.Response{
+		Code: int(app.CodeSuccess),
 		Data: CreateUserResponse{
 			UserId:    userId,
 			UserEmail: req.UserEmail,
