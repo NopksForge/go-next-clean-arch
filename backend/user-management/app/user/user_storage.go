@@ -16,11 +16,6 @@ func NewStorage(db *pgxpool.Pool) *storage {
 	return &storage{db: db}
 }
 
-func (s *storage) SaveUser(ctx context.Context, data GetUserByTokenResponse) error {
-	_, err := s.db.Exec(ctx, "insert into users(cif_no, cid) values($1, $2)", data.Data.CifNo, data.Data.CitizenID)
-	return err
-}
-
 func (s *storage) CreateUser(ctx context.Context, data UserDataPG) error {
 	_, err := s.db.Exec(ctx, "insert into users(user_id, user_email, user_name, created_by) values($1, $2, $3, $4)", data.UserId, data.UserEmail, data.UserName, data.CreatedBy)
 	return err

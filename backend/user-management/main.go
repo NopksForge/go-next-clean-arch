@@ -108,7 +108,6 @@ func router(cfg config.Config) (*gin.Engine, func()) {
 		userHTTPSrv := user.NewUserService(httpClient)
 		userStorage := user.NewStorage(db)
 		h := user.NewHandler(userHTTPSrv, userStorage)
-		r.POST("/users", h.PermitTransaction)
 		r.POST("/users/create", h.CreateUser)
 		r.GET("/users/:userId", h.GetUser)
 		r.GET("/users/list", h.GetAllUser)
