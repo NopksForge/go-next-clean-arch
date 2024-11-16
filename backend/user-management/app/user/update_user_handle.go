@@ -21,6 +21,13 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 		return
 	}
 
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, app.Response{
+			Message: err.Error(),
+		})
+		return
+	}
+
 	validate := validator.New()
 	if err := validate.Struct(req); err != nil {
 		c.JSON(http.StatusBadRequest, app.Response{
