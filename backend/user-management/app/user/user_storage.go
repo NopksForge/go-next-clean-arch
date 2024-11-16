@@ -2,7 +2,9 @@ package user
 
 import (
 	"context"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -17,4 +19,50 @@ func NewStorage(db *pgxpool.Pool) *storage {
 func (s *storage) SaveUser(ctx context.Context, data GetUserByTokenResponse) error {
 	_, err := s.db.Exec(ctx, "insert into users(cif_no, cid) values($1, $2)", data.Data.CifNo, data.Data.CitizenID)
 	return err
+}
+
+func (s *storage) CreateUser(ctx context.Context, data UserData) error {
+	_, err := s.db.Exec(ctx, "insert into users(user_id, user_email, user_name, created_by) values($1, $2, $3, $4)", data.UserId, data.UserEmail, data.UserName, data.CreatedBy)
+	return err
+}
+
+func (s *storage) GetUserById(ctx context.Context, id string) (UserData, error) {
+	var data UserData
+	err := s.db.QueryRow(ctx, "select * from users where id = $1", id).Scan(&data)
+	return data, err
+}
+
+func (s *storage) GetAllUser(ctx context.Context) ([]UserData, error) {
+	var data []UserData
+	rows, err := s.db.Query(ctx, "select * from users")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var data UserData
+		rows.Scan(&data)
+	}
+	return data, nil
+}
+
+func (s *storage) UpdateUser(ctx context.Context, data UserData) error {
+	_, err := s.db.Exec(ctx, "update users set user_email = $1, user_name = $2, updated_by = $3, updated_at = $4 where user_id = $5", data.UserEmail, data.UserName, data.UpdatedBy, data.UpdatedAt, data.UserId)
+	return err
+}
+
+func (s *storage) DeleteUser(ctx context.Context, id string) error {
+	_, err := s.db.Exec(ctx, "delete from users where user_id = $1", id)
+	return err
+}
+
+type UserData struct {
+	UserId    uuid.UUID
+	UserEmail string
+	UserName  string
+	CreatedBy string
+	CreatedAt time.Time
+	UpdatedBy *string
+	UpdatedAt *time.Time
 }

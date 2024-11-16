@@ -17,6 +17,11 @@ type userByTokenService interface {
 
 type userStorage interface {
 	SaveUser(context.Context, GetUserByTokenResponse) error
+	CreateUser(ctx context.Context, data UserData) error
+	GetAllUser(ctx context.Context) ([]UserData, error)
+	GetUserById(ctx context.Context, id string) (UserData, error)
+	UpdateUser(ctx context.Context, data UserData) error
+	DeleteUser(ctx context.Context, id string) error
 }
 
 type Handler struct {
