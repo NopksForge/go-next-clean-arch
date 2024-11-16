@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type userHandler interface {
+type userByTokenService interface {
 	UserByToken(ctx context.Context, token string) (httpclient.Response[GetUserByTokenResponse], error)
 }
 
@@ -20,11 +20,11 @@ type userStorage interface {
 }
 
 type Handler struct {
-	srv   userHandler
+	srv   userByTokenService
 	store userStorage
 }
 
-func NewHandler(srv userHandler, store userStorage) *Handler {
+func NewHandler(srv userByTokenService, store userStorage) *Handler {
 	return &Handler{srv: srv, store: store}
 }
 
