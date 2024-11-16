@@ -33,18 +33,35 @@ func (s *storage) GetUserById(ctx context.Context, id string) (UserDataPG, error
 }
 
 func (s *storage) GetAllUser(ctx context.Context) ([]UserDataPG, error) {
-	var data []UserDataPG
-	rows, err := s.db.Query(ctx, "select * from users")
+	var users []UserDataPG
+	rows, err := s.db.Query(ctx, "select user_id, user_email, user_name, created_by, created_at, updated_by, updated_at from users")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var data UserDataPG
-		rows.Scan(&data)
+		var user UserDataPG
+		err := rows.Scan(
+			&user.UserId,
+			&user.UserEmail,
+			&user.UserName,
+			&user.CreatedBy,
+			&user.CreatedAt,
+			&user.UpdatedBy,
+			&user.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
 	}
-	return data, nil
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
 
 func (s *storage) UpdateUser(ctx context.Context, data UserDataPG) error {
