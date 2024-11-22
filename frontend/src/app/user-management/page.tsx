@@ -130,12 +130,39 @@ export default function UserManagement() {
     }
   }
 
-  const handleSave = (updatedUser: User) => {
-    setUsers(users.map(user => 
-      user.id === updatedUser.id ? updatedUser : user
-    ))
-    setIsModelOpen(false)
-    setEditingUser(null)
+  const handleSave = async (updatedUser: User) => {
+    try {
+      if (IS_MOCK_ENABLED) {
+        setUsers(users.map(user => 
+          user.id === updatedUser.id ? updatedUser : user
+        ))
+      } else {
+        const response = await fetch(`${API_BASE_URL}/users/${updatedUser.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userName: updatedUser.name,
+            userEmail: updatedUser.email
+          })
+        });
+
+        const result = await response.json();
+        if (result.code === 0) {
+          setUsers(users.map(user => 
+            user.id === updatedUser.id ? updatedUser : user
+          ))
+        } else {
+          console.error('Error updating user:', result.message);
+        }
+      }
+    } catch (error) {
+      console.error('Error updating user:', error);
+    }
+    
+    setIsModelOpen(false);
+    setEditingUser(null);
   }
 
   return (
