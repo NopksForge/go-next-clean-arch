@@ -258,7 +258,7 @@ export default function UserManagement() {
           {/* Users Summary */}
           <div className="flex justify-center gap-4 p-6 border-b border-gray-100 dark:border-gray-700">
             <div className="text-center">
-              <p className="text-2xl font-semibold dark:text-white">{users.length}</p>
+              <p className="text-2xl font-semibold text-gray-600 dark:text-gray-300">{users.length}</p>
               <p className="text-sm text-gray-500 dark:text-gray-400">Total Users</p>
             </div>
           </div>
