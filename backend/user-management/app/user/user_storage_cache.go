@@ -25,7 +25,7 @@ func (s *storageCache) Set(ctx context.Context, user UserData) error {
 		return err
 	}
 
-	if err := s.cache.Set(ctx, fmt.Sprintf("%v:%v", app.RedisUserKey, user.UserId.String()), buffer.String(), 5*time.Second).Err(); err != nil {
+	if err := s.cache.Set(ctx, fmt.Sprintf("%v:%v", app.RedisUserKey, user.UserId.String()), buffer.String(), 10*time.Minute).Err(); err != nil {
 		return err
 	}
 
