@@ -19,6 +19,7 @@ type userStorage interface {
 type userStorageCache interface {
 	Set(ctx context.Context, user UserData) error
 	Get(ctx context.Context, id string) (*UserData, error)
+	Delete(ctx context.Context, id string) error
 }
 
 type Handler struct {

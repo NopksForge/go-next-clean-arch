@@ -45,3 +45,11 @@ func (s *storageCache) Get(ctx context.Context, id string) (*UserData, error) {
 
 	return &user, nil
 }
+
+func (s *storageCache) Delete(ctx context.Context, id string) error {
+	if err := s.cache.Del(ctx, fmt.Sprintf("%v:%v", app.RedisUserKey, id)).Err(); err != nil {
+		return err
+	}
+
+	return nil
+}

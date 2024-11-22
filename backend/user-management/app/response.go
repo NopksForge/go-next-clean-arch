@@ -32,14 +32,14 @@ func ReturnSuccess(c *gin.Context, data any) {
 func ReturnBadRequest(c *gin.Context, message string) {
 	c.JSON(http.StatusBadRequest, Response{
 		Code:    int(CodeFailedBadRequest),
-		Message: message,
+		Message: "Bad request: " + message,
 	})
 }
 
-func ReturnNotFound(c *gin.Context, message string) {
+func ReturnNotFound(c *gin.Context) {
 	c.JSON(http.StatusNotFound, Response{
 		Code:    int(CodeFailedNotFound),
-		Message: message,
+		Message: "User not found",
 	})
 }
 

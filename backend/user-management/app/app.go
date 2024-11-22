@@ -9,5 +9,7 @@ const (
 )
 
 const (
-	ErrorNotFound = "no rows in result set"
+	ErrorDBNotFound = "no rows in result set"
+	ErrorInternal   = "internal server error"
+	ErrorCache      = "failed to set/get cache"
 )

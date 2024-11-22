@@ -29,8 +29,8 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 
 	_, err := h.store.GetUserById(c.Request.Context(), req.UserId)
 	if err != nil {
-		if err.Error() == app.ErrorNotFound {
-			app.ReturnNotFound(c, "User not found")
+		if err.Error() == app.ErrorDBNotFound {
+			app.ReturnNotFound(c)
 			return
 		}
 		app.ReturnInternalError(c, "Failed to retrieve user from database: "+err.Error())
