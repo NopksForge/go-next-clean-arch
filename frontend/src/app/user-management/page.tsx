@@ -5,6 +5,7 @@ import { User } from '../types/user'
 import { UserCard } from '../components/UserCard'
 import { EditModal } from '../components/EditModal'
 import { DarkModeToggle } from '../components/DarkModeToggle'
+import { AddUserButton } from '../components/AddUserButton'
 
 interface ApiResponse {
   code: number;
@@ -182,6 +183,56 @@ export default function UserManagement() {
     setEditingUser(null);
   }
 
+  const handleCreate = async (newUser: Omit<User, 'id'>) => {
+    try {
+      if (IS_MOCK_ENABLED) {
+        const mockUser: User = {
+          id: (users.length + 1).toString(),
+          name: newUser.name,
+          email: newUser.email
+        };
+        setUsers([...users, mockUser]);
+      } else {
+        const response = await fetch(`${API_BASE_URL}/users/create`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userName: newUser.name,
+            userEmail: newUser.email
+          })
+        });
+
+        const result = await response.json();
+        if (result.code === 0) {
+          // Refresh user list after successful creation
+          const fetchResponse = await fetch(`${API_BASE_URL}/users/list`);
+          const fetchResult: ApiResponse = await fetchResponse.json();
+          if (fetchResult.code === 0) {
+            const transformedUsers: User[] = fetchResult.data.map(apiUser => ({
+              id: apiUser.userId,
+              name: apiUser.userName,
+              email: apiUser.userEmail
+            }));
+            setUsers(transformedUsers);
+          }
+        } else {
+          console.error('Error creating user:', result.message);
+        }
+      }
+    } catch (error) {
+      console.error('Error creating user:', error);
+    }
+    setIsModelOpen(false);
+    setEditingUser(null);
+  }
+
+  const handleAddUser = () => {
+    setEditingUser(null);
+    setIsModelOpen(true);
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <div className="absolute top-4 right-4 z-50">
@@ -239,12 +290,20 @@ export default function UserManagement() {
         </div>
       </div>
 
+      <AddUserButton onClick={handleAddUser} />
+
       {isModelOpen && (
         <EditModal
           editingUser={editingUser || undefined}
-          onSave={handleSave}
+          onSave={(user) => {
+            if (editingUser) {
+              handleSave(user as User);
+            } else {
+              handleCreate(user);
+            }
+          }}
           onClose={() => setIsModelOpen(false)}
-          aria-modal="true"
+          isCreating={!editingUser}
         />
       )}
     </div>

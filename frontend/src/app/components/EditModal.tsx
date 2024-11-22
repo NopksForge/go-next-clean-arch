@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 
 interface EditModalProps {
   editingUser?: { id: string; name: string; email: string }
-  onSave: (user: { id: string; name: string; email: string }) => void
+  onSave: (user: { id?: string; name: string; email: string }) => void
   onClose: () => void
+  isCreating?: boolean
 }
 
-export function EditModal({ editingUser, onSave, onClose }: EditModalProps) {
+export function EditModal({ editingUser, onSave, onClose, isCreating }: EditModalProps) {
   const [formData, setFormData] = useState(editingUser || { id: '', name: '', email: '' })
   const [errors, setErrors] = useState({ name: '', email: '' })
 
@@ -49,7 +50,7 @@ export function EditModal({ editingUser, onSave, onClose }: EditModalProps) {
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 w-full max-w-md shadow-2xl transform transition-all">
         <h2 className="text-2xl font-bold mb-6 dark:text-white text-center">
-          ✏️ Edit User Details
+          {isCreating ? '➕ Add New User' : '✏️ Edit User Details'}
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="space-y-6">
@@ -112,7 +113,7 @@ export function EditModal({ editingUser, onSave, onClose }: EditModalProps) {
                         hover:bg-blue-700 hover:shadow-lg
                         focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             >
-              Save Changes
+              {isCreating ? 'Add User' : 'Save Changes'}
             </button>
           </div>
         </form>
