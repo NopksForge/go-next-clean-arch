@@ -161,7 +161,7 @@ var headers = []string{
 func accessControl(c *gin.Context) {
 	cfg := config.C(config.Env)
 	c.Writer.Header().Set("Access-Control-Allow-Origin", cfg.AccessControl.AllowOrigin)
-	c.Writer.Header().Set("Access-Control-Request-Method", "POST, GET, PUT, OPTIONS")
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS")
 	c.Writer.Header().Set("Access-Control-Allow-Headers", strings.Join(headers, ","))
 	if c.Request.Method == "OPTIONS" {
 		c.AbortWithStatus(204)
