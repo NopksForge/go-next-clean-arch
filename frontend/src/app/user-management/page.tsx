@@ -125,7 +125,24 @@ export default function UserManagement() {
 
   const handleDelete = async (userId: string) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
-      setUsers(users.filter(user => user.id !== userId))
+      try {
+        if (IS_MOCK_ENABLED) {
+          setUsers(users.filter(user => user.id !== userId))
+        } else {
+          const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+            method: 'DELETE',
+          });
+          
+          const result = await response.json();
+          if (result.code === 0) {
+            setUsers(users.filter(user => user.id !== userId))
+          } else {
+            console.error('Error deleting user:', result.message);
+          }
+        }
+      } catch (error) {
+        console.error('Error deleting user:', error);
+      }
       setActiveDropdown(null)
     }
   }
