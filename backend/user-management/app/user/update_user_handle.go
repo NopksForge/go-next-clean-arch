@@ -1,7 +1,6 @@
 package user
 
 import (
-	"net/http"
 	"time"
 	"user-management/app"
 
@@ -13,43 +12,28 @@ import (
 func (h *Handler) UpdateUser(c *gin.Context) {
 	var req UpdateUserRequest
 	if err := c.ShouldBindUri(&req); err != nil {
-		c.JSON(http.StatusBadRequest, app.Response{
-			Code:    int(app.CodeFailedBadRequest),
-			Message: err.Error(),
-		})
+		app.ReturnBadRequest(c, err.Error())
 		return
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, app.Response{
-			Code:    int(app.CodeFailedBadRequest),
-			Message: err.Error(),
-		})
+		app.ReturnBadRequest(c, err.Error())
 		return
 	}
 
 	validate := validator.New()
 	if err := validate.Struct(req); err != nil {
-		c.JSON(http.StatusBadRequest, app.Response{
-			Code:    int(app.CodeFailedBadRequest),
-			Message: err.Error(),
-		})
+		app.ReturnBadRequest(c, err.Error())
 		return
 	}
 
 	_, err := h.store.GetUserById(c.Request.Context(), req.UserId)
 	if err != nil {
 		if err.Error() == app.ErrorNotFound {
-			c.JSON(http.StatusNotFound, app.Response{
-				Code:    int(app.CodeFailedNotFound),
-				Message: "User not found",
-			})
+			app.ReturnNotFound(c, "User not found")
 			return
 		}
-		c.JSON(http.StatusInternalServerError, app.Response{
-			Code:    int(app.CodeFailedInternal),
-			Message: err.Error(),
-		})
+		app.ReturnInternalError(c, "Failed to retrieve user from database: "+err.Error())
 		return
 	}
 
@@ -63,18 +47,11 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 		UpdatedBy: &updateUser,
 		UpdatedAt: &now,
 	}); err != nil {
-
-		c.JSON(http.StatusInternalServerError, app.Response{
-			Code:    int(app.CodeFailedInternal),
-			Message: err.Error(),
-		})
+		app.ReturnInternalError(c, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, app.Response{
-		Code:    int(app.CodeSuccess),
-		Message: "updated user successfully",
-	})
+	app.ReturnSuccess(c, "updated user successfully")
 }
 
 type UpdateUserRequest struct {

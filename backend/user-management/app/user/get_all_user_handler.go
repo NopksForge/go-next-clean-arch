@@ -1,7 +1,6 @@
 package user
 
 import (
-	"net/http"
 	"user-management/app"
 
 	"github.com/gin-gonic/gin"
@@ -10,10 +9,7 @@ import (
 func (h *Handler) GetAllUser(c *gin.Context) {
 	allUserData, err := h.store.GetAllUser(c.Request.Context())
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, app.Response{
-			Code:    int(app.CodeFailedInternal),
-			Message: err.Error(),
-		})
+		app.ReturnInternalError(c, err.Error())
 		return
 	}
 
@@ -27,10 +23,7 @@ func (h *Handler) GetAllUser(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, app.Response{
-		Code: int(app.CodeSuccess),
-		Data: responseData,
-	})
+	app.ReturnSuccess(c, responseData)
 }
 
 type Userdata struct {

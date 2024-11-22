@@ -1,7 +1,6 @@
 package user
 
 import (
-	"net/http"
 	"user-management/app"
 	"user-management/logger"
 
@@ -13,10 +12,7 @@ func (h *Handler) GetUser(c *gin.Context) {
 	logger := logger.New()
 	var req GetUserRequest
 	if err := c.ShouldBindUri(&req); err != nil {
-		c.JSON(http.StatusBadRequest, app.Response{
-			Code:    int(app.CodeFailedBadRequest),
-			Message: err.Error(),
-		})
+		app.ReturnBadRequest(c, err.Error())
 		return
 	}
 
@@ -29,17 +25,12 @@ func (h *Handler) GetUser(c *gin.Context) {
 			if err != nil {
 				switch err.Error() {
 				case app.ErrorNotFound:
-					c.JSON(http.StatusNotFound, app.Response{
-						Code:    int(app.CodeFailedNotFound),
-						Message: "User not found",
-					})
+					app.ReturnNotFound(c, "User not found")
+					return
 				default:
-					c.JSON(http.StatusInternalServerError, app.Response{
-						Code:    int(app.CodeFailedInternal),
-						Message: "Failed to retrieve user from database: " + err.Error(),
-					})
+					app.ReturnInternalError(c, "Failed to retrieve user from database: "+err.Error())
+					return
 				}
-				return
 			}
 			logger.Info("get user from database", "userId", req.UserId)
 
@@ -49,23 +40,17 @@ func (h *Handler) GetUser(c *gin.Context) {
 			}
 		} else {
 			// For any other cache error, return internal server error
-			c.JSON(http.StatusInternalServerError, app.Response{
-				Code:    int(app.CodeFailedInternal),
-				Message: "Failed to retrieve user from cache: " + err.Error(),
-			})
+			app.ReturnInternalError(c, "Failed to retrieve user from cache: "+err.Error())
 			return
 		}
 	} else {
 		logger.Info("get user from cache", "userId", req.UserId)
 	}
 
-	c.JSON(http.StatusOK, app.Response{
-		Code: int(app.CodeSuccess),
-		Data: GetUserResponse{
-			UserId:    user.UserId.String(),
-			UserEmail: user.UserEmail,
-			UserName:  user.UserName,
-		},
+	app.ReturnSuccess(c, GetUserResponse{
+		UserId:    user.UserId.String(),
+		UserEmail: user.UserEmail,
+		UserName:  user.UserName,
 	})
 }
 
