@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { User } from '../types/user'
 import { UserCard } from '../components/UserCard'
-import { EditModal } from '../components/EditModal'
+import { EditModel } from '../components/EditModel'
 import { DarkModeToggle } from '../components/DarkModeToggle'
 import { AddUserButton } from '../components/AddUserButton'
 
@@ -293,7 +293,7 @@ export default function UserManagement() {
       <AddUserButton onClick={handleAddUser} />
 
       {isModelOpen && (
-        <EditModal
+        <EditModel
           editingUser={editingUser || undefined}
           onSave={(user) => {
             if (editingUser) {
