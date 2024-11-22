@@ -7,7 +7,7 @@ interface EditModalProps {
   isCreating?: boolean
 }
 
-export function EditModal({ editingUser, onSave, onClose, isCreating }: EditModalProps) {
+export function EditModel({ editingUser, onSave, onClose, isCreating }: EditModalProps) {
   const [formData, setFormData] = useState(editingUser || { id: '', name: '', email: '' })
   const [errors, setErrors] = useState({ name: '', email: '' })
 
