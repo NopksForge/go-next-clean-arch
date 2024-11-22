@@ -6,6 +6,26 @@ import { UserCard } from '../components/UserCard'
 import { EditModal } from '../components/EditModal'
 import { DarkModeToggle } from '../components/DarkModeToggle'
 
+interface ApiResponse {
+  code: number;
+  message: string;
+  data: Array<{
+    userId: string;
+    userName: string;
+    userEmail: string;
+  }>;
+}
+
+// Add mock configuration
+const MOCK_USERS: User[] = [
+  { id: '1', name: 'John Doe', email: 'john@example.com' },
+  { id: '2', name: 'Jane Smith', email: 'jane@example.com' },
+  { id: '3', name: 'Bob Wilson', email: 'bob@example.com' },
+]
+
+const IS_MOCK_ENABLED = process.env.NEXT_PUBLIC_USE_MOCK === 'true'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
+
 export default function UserManagement() {
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
@@ -27,20 +47,30 @@ export default function UserManagement() {
 
     const fetchUsers = async () => {
       try {
-        // Simulate API call with mock data
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        const mockUsers = [
-          { id: "1", name: "John Doe", email: "john@example.com" },
-          { id: "2", name: "Jane Smith", email: "jane@example.com" },
-          { id: "3", name: "Bob Johnson", email: "bob@example.com" },
-          { id: "4", name: "Alice Brown", email: "alice@example.com" },
-          { id: "5", name: "Charlie Wilson", email: "charlie@example.com" }
-        ]
-        setUsers(mockUsers)
+        if (IS_MOCK_ENABLED) {
+          setUsers(MOCK_USERS)
+          return
+        }
+
+        const response = await fetch(`${API_BASE_URL}/users/list`);
+        const result: ApiResponse = await response.json();
+        console.log(result);
+        if (result.code === 0) {
+          // Transform API users to match our User interface
+          const transformedUsers: User[] = result.data.map((apiUser: { userId: any; userName: any; userEmail: any }) => ({
+            id: apiUser.userId,
+            name: apiUser.userName,
+            email: apiUser.userEmail
+          }));
+          
+          setUsers(transformedUsers);
+        } else {
+          console.error('Error fetching users:', result.message);
+        }
       } catch (error) {
-        console.error('Error fetching users:', error)
+        console.error('Error fetching users:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
@@ -140,16 +170,27 @@ export default function UserManagement() {
 
           {/* User Cards Grid */}
           <div className="grid md:grid-cols-2 gap-6 p-6">
-            {users.map((user) => (
-              <UserCard
-                key={user.id}
-                user={user}
-                activeDropdown={activeDropdown}
-                setActiveDropdown={setActiveDropdown}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
-            ))}
+            {loading ? (
+              <div className="col-span-2 text-center py-8">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-blue-600"></div>
+                <p className="mt-2 text-gray-500 dark:text-gray-400">Loading users...</p>
+              </div>
+            ) : users.length === 0 ? (
+              <div className="col-span-2 text-center py-8">
+                <p className="text-gray-500 dark:text-gray-400">No users found</p>
+              </div>
+            ) : (
+              users.map((user) => (
+                <UserCard
+                  key={user.id}
+                  user={user}
+                  activeDropdown={activeDropdown}
+                  setActiveDropdown={setActiveDropdown}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              ))
+            )}
           </div>
         </div>
       </div>
