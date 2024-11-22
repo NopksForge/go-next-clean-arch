@@ -9,18 +9,24 @@ type userByTokenService interface {
 }
 
 type userStorage interface {
-	CreateUser(ctx context.Context, data UserDataPG) error
-	GetAllUser(ctx context.Context) ([]UserDataPG, error)
-	GetUserById(ctx context.Context, id string) (UserDataPG, error)
-	UpdateUser(ctx context.Context, data UserDataPG) error
+	CreateUser(ctx context.Context, data UserData) error
+	GetAllUser(ctx context.Context) ([]UserData, error)
+	GetUserById(ctx context.Context, id string) (*UserData, error)
+	UpdateUser(ctx context.Context, data UserData) error
 	DeleteUser(ctx context.Context, id string) error
+}
+
+type userStorageCache interface {
+	Set(ctx context.Context, user UserData) error
+	Get(ctx context.Context, id string) (*UserData, error)
 }
 
 type Handler struct {
 	srv   userByTokenService
 	store userStorage
+	cache userStorageCache
 }
 
-func NewHandler(srv userByTokenService, store userStorage) *Handler {
-	return &Handler{srv: srv, store: store}
+func NewHandler(srv userByTokenService, store userStorage, cache userStorageCache) *Handler {
+	return &Handler{srv: srv, store: store, cache: cache}
 }

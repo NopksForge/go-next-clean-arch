@@ -31,7 +31,7 @@ func (h *Handler) CreateUser(c *gin.Context) {
 
 	userId := uuid.Must(uuid.NewV7())
 
-	if err := h.store.CreateUser(c.Request.Context(), UserDataPG{
+	if err := h.store.CreateUser(c.Request.Context(), UserData{
 		UserId:    userId,
 		UserName:  req.UserName,
 		UserEmail: req.UserEmail,

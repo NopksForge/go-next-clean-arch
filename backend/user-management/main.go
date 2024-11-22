@@ -17,8 +17,9 @@ import (
 	"user-management/config"
 	"user-management/database"
 	"user-management/httpclient"
-
 	"user-management/logger"
+
+	"github.com/redis/go-redis/v9"
 
 	"github.com/gin-gonic/gin"
 
@@ -103,11 +104,15 @@ func router(cfg config.Config) (*gin.Engine, func()) {
 
 	httpClient := httpclient.NewHTTPClient(app.ForwardRefIDOption)
 	db := database.NewPostgresDB(cfg.Database.PostgresURL)
+	cache := redis.NewClient(&redis.Options{
+		Addr: cfg.Cache.RedisURL,
+	})
 
 	{
 		userHTTPSrv := user.NewUserService(httpClient)
 		userStorage := user.NewStorage(db)
-		h := user.NewHandler(userHTTPSrv, userStorage)
+		userStorageCache := user.NewStorageCache(cache)
+		h := user.NewHandler(userHTTPSrv, userStorage, userStorageCache)
 		r.POST("/users/create", h.CreateUser)
 		r.GET("/users/:userId", h.GetUser)
 		r.GET("/users/list", h.GetAllUser)

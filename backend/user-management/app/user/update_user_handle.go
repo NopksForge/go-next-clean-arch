@@ -56,7 +56,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 	updateUser := "ADMIN"
 	now := time.Now()
 
-	if err := h.store.UpdateUser(c.Request.Context(), UserDataPG{
+	if err := h.store.UpdateUser(c.Request.Context(), UserData{
 		UserId:    uuid.MustParse(req.UserId),
 		UserEmail: req.UserEmail,
 		UserName:  req.UserName,

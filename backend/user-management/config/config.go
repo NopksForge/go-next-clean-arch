@@ -12,6 +12,7 @@ type Config struct {
 	Server                    Server
 	AccessControl             AccessControl
 	Database                  Database
+	Cache                     Cache
 	Header                    Header
 	ServiceCoreDltAccountUrl  string `env:"SERVICE_CORE_DLT_ACCOUNT_URL"`
 	ServiceCoreDltInterPermit string `env:"SERVICE_CORE_DLT_INTER_PERMIT"`
@@ -29,6 +30,10 @@ type AccessControl struct {
 
 type Database struct {
 	PostgresURL string `env:"POSTGRES_URL"`
+}
+
+type Cache struct {
+	RedisURL string `env:"REDIS_URL"`
 }
 
 type Header struct {
