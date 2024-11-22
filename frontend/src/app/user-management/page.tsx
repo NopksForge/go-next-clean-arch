@@ -255,7 +255,13 @@ export default function UserManagement() {
       {/* Page Title */}
       <div className="bg-gradient-to-b from-white dark:from-gray-800 to-gray-200 dark:to-gray-900">
         <div className="container mx-auto px-4 pt-24 pb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300">
+          <h1 className="text-4xl md:text-5xl font-bold text-center mb-4 
+            bg-clip-text text-transparent 
+            bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500
+            dark:from-purple-300 dark:via-pink-300 dark:to-indigo-300
+            tracking-tight leading-normal py-2
+            drop-shadow-[0_0_15px_rgba(168,85,247,0.2)]
+            transition-all duration-300 hover:scale-[1.02]">
             User Management
           </h1>
           <p className="text-center text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12">
