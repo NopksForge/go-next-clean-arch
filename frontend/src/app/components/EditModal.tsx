@@ -8,6 +8,7 @@ interface EditModalProps {
 
 export function EditModal({ editingUser, onSave, onClose }: EditModalProps) {
   const [formData, setFormData] = useState(editingUser || { id: '', name: '', email: '' })
+  const [errors, setErrors] = useState({ name: '', email: '' })
 
   useEffect(() => {
     if (editingUser) {
@@ -15,9 +16,33 @@ export function EditModal({ editingUser, onSave, onClose }: EditModalProps) {
     }
   }, [editingUser])
 
+  const validateForm = () => {
+    const newErrors = { name: '', email: '' }
+    let isValid = true
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required'
+      isValid = false
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required'
+      isValid = false
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address'
+      isValid = false
+    }
+
+    setErrors(newErrors)
+    return isValid
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSave(formData)
+    if (validateForm()) {
+      onSave(formData)
+    }
   }
 
   return (
@@ -35,13 +60,18 @@ export function EditModal({ editingUser, onSave, onClose }: EditModalProps) {
               <input
                 type="text"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="mt-1 block w-full rounded-lg border border-gray-200 px-4 py-3 
+                onChange={(e) => {
+                  setFormData({ ...formData, name: e.target.value })
+                  if (errors.name) setErrors({ ...errors, name: '' })
+                }}
+                className={`mt-1 block w-full rounded-lg border px-4 py-3 
                           transition duration-150 ease-in-out
                           focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-30
-                          dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                          dark:bg-gray-700 dark:text-white
+                          ${errors.name ? 'border-red-500 dark:border-red-500' : 'border-gray-200 dark:border-gray-600'}`}
                 placeholder="Enter name"
               />
+              {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
@@ -50,13 +80,18 @@ export function EditModal({ editingUser, onSave, onClose }: EditModalProps) {
               <input
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="mt-1 block w-full rounded-lg border border-gray-200 px-4 py-3
+                onChange={(e) => {
+                  setFormData({ ...formData, email: e.target.value })
+                  if (errors.email) setErrors({ ...errors, email: '' })
+                }}
+                className={`mt-1 block w-full rounded-lg border px-4 py-3
                           transition duration-150 ease-in-out
                           focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-30
-                          dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                          dark:bg-gray-700 dark:text-white
+                          ${errors.email ? 'border-red-500 dark:border-red-500' : 'border-gray-200 dark:border-gray-600'}`}
                 placeholder="Enter email"
               />
+              {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
             </div>
           </div>
           <div className="mt-8 flex justify-end space-x-4">
