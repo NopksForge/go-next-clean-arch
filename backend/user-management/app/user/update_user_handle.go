@@ -3,6 +3,7 @@ package user
 import (
 	"time"
 	"user-management/app"
+	"user-management/logger"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator"
@@ -10,6 +11,7 @@ import (
 )
 
 func (h *Handler) UpdateUser(c *gin.Context) {
+	logger := logger.New()
 	var req UpdateUserRequest
 	if err := c.ShouldBindUri(&req); err != nil {
 		app.ReturnBadRequest(c, err.Error())
@@ -27,27 +29,38 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	_, err := h.store.GetUserById(c.Request.Context(), req.UserId)
+	_, err := h.getUserFromStorage(c, req.UserId)
 	if err != nil {
-		if err.Error() == app.ErrorDBNotFound {
+		switch err.Error() {
+		case app.ErrorDBNotFound:
 			app.ReturnNotFound(c)
-			return
+		case app.ErrorCache:
+			app.ReturnInternalError(c, err.Error())
+		default:
+			app.ReturnInternalError(c, err.Error())
 		}
-		app.ReturnInternalError(c, "Failed to retrieve user from database: "+err.Error())
 		return
 	}
 
 	updateUser := "ADMIN"
 	now := time.Now()
 
-	if err := h.store.UpdateUser(c.Request.Context(), UserData{
+	user := UserData{
 		UserId:    uuid.MustParse(req.UserId),
 		UserEmail: req.UserEmail,
 		UserName:  req.UserName,
 		UpdatedBy: &updateUser,
 		UpdatedAt: &now,
-	}); err != nil {
+	}
+
+	if err := h.store.UpdateUser(c.Request.Context(), user); err != nil {
 		app.ReturnInternalError(c, err.Error())
+		return
+	}
+
+	if err := h.cache.Set(c.Request.Context(), user); err != nil {
+		logger.Error("failed to set user to cache", "error", err, "userId", user.UserId.String())
+		app.ReturnInternalError(c, "Failed to set user to cache: "+err.Error())
 		return
 	}
 
