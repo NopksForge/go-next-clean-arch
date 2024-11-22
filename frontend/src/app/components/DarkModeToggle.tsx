@@ -8,7 +8,7 @@ export function DarkModeToggle({ darkMode, onToggle }: DarkModeToggleProps) {
     <div>
       <button
         onClick={onToggle}
-        className="p-2 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300"
+        className="p-2 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl"
         aria-label="Toggle Dark Mode"
       >
         {darkMode ? (

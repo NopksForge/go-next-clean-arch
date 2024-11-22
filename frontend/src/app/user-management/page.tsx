@@ -234,20 +234,20 @@ export default function UserManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-200 dark:bg-gray-900">
       <div className="absolute top-4 right-4 z-50">
         <DarkModeToggle darkMode={darkMode} onToggle={toggleDarkMode} />
       </div>
       
 
       {/* Page Title */}
-      <div className="bg-gradient-to-b from-white dark:from-gray-800 to-gray-50 dark:to-gray-900">
-        <div className="container mx-auto px-4 py-16">
+      <div className="bg-gradient-to-b from-white dark:from-gray-800 to-gray-200 dark:to-gray-900">
+        <div className="container mx-auto px-4 pt-24 pb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300">
             User Management
           </h1>
           <p className="text-center text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12">
-            You can manage your team members here, (update, delete).
+            You can manage your team members here, (add,update, delete).
           </p>
         </div>
       </div>
