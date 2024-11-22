@@ -36,14 +36,26 @@ export default function UserManagement() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
 
   useEffect(() => {
-    // Check system preference or saved preference
-    const isDark = localStorage.getItem('darkMode') === 'true' || 
-      window.matchMedia('(prefers-color-scheme: dark)').matches
-    setDarkMode(isDark)
+    // Get saved preference from localStorage first
+    const savedDarkMode = localStorage.getItem('darkMode')
     
-    // Apply dark mode class to html element
-    if (isDark) {
-      document.documentElement.classList.add('dark')
+    // If there's a saved preference, use it
+    if (savedDarkMode !== null) {
+      const isDark = savedDarkMode === 'true'
+      setDarkMode(isDark)
+      if (isDark) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    } else {
+      // If no saved preference, check system preference
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      setDarkMode(isDark)
+      localStorage.setItem('darkMode', isDark.toString())
+      if (isDark) {
+        document.documentElement.classList.add('dark')
+      }
     }
 
     const fetchUsers = async () => {
