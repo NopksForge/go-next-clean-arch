@@ -1,4 +1,4 @@
-module user-management
+module user-consumer
 
 go 1.23.1
 
