@@ -109,13 +109,13 @@ func router(cfg config.Config) (*gin.Engine, func()) {
 	cache := redis.NewClient(&redis.Options{
 		Addr: cfg.Cache.RedisURL,
 	})
+	kafkaConsumer := kafka.NewConsumer(cfg.Kafka.Addrs)
 
 	{
 		userStorage := user.NewStorage(db)
 		userStorageCache := user.NewStorageCache(cache)
 		userHandler := user.NewHandler(userStorage, userStorageCache)
 
-		kafkaConsumer := kafka.NewConsumer(cfg.Kafka.Addrs)
 		partitionConsumer, err := kafkaConsumer.ConsumePartition(string(app.KafkaTopicUserCreation), 0, sarama.OffsetNewest)
 		if err != nil {
 			panic(err)
