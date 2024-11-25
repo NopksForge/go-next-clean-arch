@@ -6,6 +6,8 @@ import { UserCard } from '../components/UserCard'
 import { EditModel } from '../components/EditModel'
 import { DarkModeToggle } from '../components/DarkModeToggle'
 import { AddUserButton } from '../components/AddUserButton'
+import { RefreshButton } from '../components/RefreshButton'
+
 
 interface ApiResponse {
   code: number;
@@ -34,6 +36,38 @@ export default function UserManagement() {
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [isModelOpen, setIsModelOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
+  const [lastUpdateTime, setLastUpdateTime] = useState<string>('')
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      if (IS_MOCK_ENABLED) {
+        setUsers(MOCK_USERS);
+        return;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/users/list`);
+      const result: ApiResponse = await response.json();
+      if (result.code === 0) {
+        const transformedUsers: User[] = result.data.map((apiUser) => ({
+          id: apiUser.userId,
+          name: apiUser.userName,
+          email: apiUser.userEmail,
+        }));
+        setUsers(transformedUsers);
+      } else {
+        console.error('Error fetching users:', result.message);
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } finally {
+      const now = new Date()
+      const hours = now.getHours().toString().padStart(2, '0')
+      const minutes = now.getMinutes().toString().padStart(2, '0')
+      setLastUpdateTime(`${hours}:${minutes}`)
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     // Get saved preference from localStorage first
@@ -55,35 +89,6 @@ export default function UserManagement() {
       localStorage.setItem('darkMode', isDark.toString())
       if (isDark) {
         document.documentElement.classList.add('dark')
-      }
-    }
-
-    const fetchUsers = async () => {
-      try {
-        if (IS_MOCK_ENABLED) {
-          setUsers(MOCK_USERS)
-          return
-        }
-
-        const response = await fetch(`${API_BASE_URL}/users/list`);
-        const result: ApiResponse = await response.json();
-        console.log(result);
-        if (result.code === 0) {
-          // Transform API users to match our User interface
-          const transformedUsers: User[] = result.data.map((apiUser: { userId: any; userName: any; userEmail: any }) => ({
-            id: apiUser.userId,
-            name: apiUser.userName,
-            email: apiUser.userEmail
-          }));
-          
-          setUsers(transformedUsers);
-        } else {
-          console.error('Error fetching users:', result.message);
-        }
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      } finally {
-        setLoading(false);
       }
     }
 
@@ -247,7 +252,8 @@ export default function UserManagement() {
 
   return (
     <div className="min-h-screen bg-gray-200 dark:bg-gray-900">
-      <div className="absolute top-4 right-4 z-50">
+      <div className="absolute top-4 right-4 z-50 flex items-center gap-4">
+        <RefreshButton onRefresh={fetchUsers} isLoading={loading} />
         <DarkModeToggle darkMode={darkMode} onToggle={toggleDarkMode} />
       </div>
       
@@ -274,11 +280,17 @@ export default function UserManagement() {
       <div className="container mx-auto px-4 pb-16">
         <div className="backdrop-blur-xl bg-white/70 dark:bg-gray-800/70 rounded-2xl shadow-xl overflow-hidden">
           {/* Users Summary */}
-          <div className="flex justify-center gap-4 p-6 border-b border-gray-100 dark:border-gray-700">
+          <div className="flex justify-around gap-4 p-6 border-b border-gray-100 dark:border-gray-700">
             <div className="text-center">
               <p className="text-2xl font-semibold text-gray-600 dark:text-gray-300">{users.length}</p>
               <p className="text-sm text-gray-500 dark:text-gray-400">Total Users</p>
             </div>
+            {lastUpdateTime && (
+              <div className="text-center">
+                <p className="text-2xl font-semibold text-gray-600 dark:text-gray-300">{lastUpdateTime}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Last updated</p>
+              </div>
+            )}
           </div>
 
           {/* User Cards Grid */}
