@@ -13,8 +13,8 @@ type Config struct {
 	AccessControl             AccessControl
 	Database                  Database
 	Cache                     Cache
-	Kafka                     Kafka
 	Header                    Header
+	Kafka                     Kafka
 	ServiceCoreDltAccountUrl  string `env:"SERVICE_CORE_DLT_ACCOUNT_URL"`
 	ServiceCoreDltInterPermit string `env:"SERVICE_CORE_DLT_INTER_PERMIT"`
 	// add more configuration here below
@@ -37,12 +37,12 @@ type Cache struct {
 	RedisURL string `env:"REDIS_URL"`
 }
 
-type Kafka struct {
-	Addrs []string `env:"KAFKA_ADDRS"`
-}
-
 type Header struct {
 	RefIDHeaderKey string `env:"REF_ID_HEADER_KEY,notEmpty"`
+}
+
+type Kafka struct {
+	Addrs []string `env:"KAFKA_ADDRS,notEmpty"`
 }
 
 var once sync.Once

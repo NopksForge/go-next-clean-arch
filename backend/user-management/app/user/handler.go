@@ -22,12 +22,17 @@ type userStorageCache interface {
 	Delete(ctx context.Context, id string) error
 }
 
+type userStorageKafka interface {
+	ProduceUserCreation(ctx context.Context, data []byte) error
+}
+
 type Handler struct {
 	srv   userByTokenService
 	store userStorage
 	cache userStorageCache
+	kafka userStorageKafka
 }
 
-func NewHandler(srv userByTokenService, store userStorage, cache userStorageCache) *Handler {
-	return &Handler{srv: srv, store: store, cache: cache}
+func NewHandler(srv userByTokenService, store userStorage, cache userStorageCache, kafka userStorageKafka) *Handler {
+	return &Handler{srv: srv, store: store, cache: cache, kafka: kafka}
 }

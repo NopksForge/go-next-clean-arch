@@ -1,6 +1,7 @@
 package user
 
 import (
+	"encoding/json"
 	"time"
 	"user-management/app"
 	"user-management/logger"
@@ -33,14 +34,15 @@ func (h *Handler) CreateUser(c *gin.Context) {
 		CreatedAt: time.Now(),
 	}
 
-	if err := h.store.CreateUser(c.Request.Context(), user); err != nil {
+	userBytes, err := json.Marshal(user)
+	if err != nil {
 		app.ReturnInternalError(c, err.Error())
 		return
 	}
 
-	if err := h.cache.Set(c.Request.Context(), user); err != nil {
-		logger.Error("failed to set user to cache", "error", err, "userId", userId)
-		app.ReturnInternalError(c, "Failed to set user to cache: "+err.Error())
+	if err := h.kafka.ProduceUserCreation(c.Request.Context(), userBytes); err != nil {
+		logger.Error("failed to produce user creation", "error", err)
+		app.ReturnInternalError(c, err.Error())
 		return
 	}
 

@@ -12,14 +12,14 @@ import (
 	"strings"
 	"syscall"
 	"time"
-	"user-management/app"
-	"user-management/app/user"
-	"user-management/config"
-	"user-management/database"
-	"user-management/httpclient"
-	"user-management/kafka"
-	"user-management/logger"
+	"user-consumer/app"
+	"user-consumer/app/user"
+	"user-consumer/config"
+	"user-consumer/database"
+	"user-consumer/kafka"
+	"user-consumer/logger"
 
+	"github.com/IBM/sarama"
 	"github.com/redis/go-redis/v9"
 
 	"github.com/gin-gonic/gin"
@@ -84,6 +84,8 @@ func router(cfg config.Config) (*gin.Engine, func()) {
 	r := gin.New()
 	r.Use(gin.Recovery())
 
+	ctx := &gin.Context{}
+
 	if config.IsLocalEnv() {
 		r.Use(gin.Logger())
 	}
@@ -103,24 +105,27 @@ func router(cfg config.Config) (*gin.Engine, func()) {
 		handlerTimeoutMiddleware,
 	)
 
-	httpClient := httpclient.NewHTTPClient(app.ForwardRefIDOption)
 	db := database.NewPostgresDB(cfg.Database.PostgresURL)
 	cache := redis.NewClient(&redis.Options{
 		Addr: cfg.Cache.RedisURL,
 	})
-	producer := kafka.NewSyncProducerGuarantee(cfg.Kafka.Addrs)
+	kafkaConsumer := kafka.NewConsumer(cfg.Kafka.Addrs)
 
 	{
-		userHTTPSrv := user.NewUserService(httpClient)
 		userStorage := user.NewStorage(db)
 		userStorageCache := user.NewStorageCache(cache)
-		userStorageKafka := user.NewStorageKafka(producer)
-		h := user.NewHandler(userHTTPSrv, userStorage, userStorageCache, userStorageKafka)
-		r.POST("/users/create", h.CreateUser)
-		r.GET("/users/:userId", h.GetUser)
-		r.GET("/users/list", h.GetAllUser)
-		r.PUT("/users/:userId", h.UpdateUser)
-		r.DELETE("/users/:userId", h.DeleteUser)
+		userHandler := user.NewHandler(userStorage, userStorageCache)
+
+		partitionConsumer, err := kafkaConsumer.ConsumePartition(string(app.KafkaTopicUserCreation), 0, sarama.OffsetNewest)
+		if err != nil {
+			panic(err)
+		}
+
+		go func() {
+			for {
+				userHandler.ConsumeUserCreation(ctx, <-partitionConsumer.Messages())
+			}
+		}()
 	}
 
 	// add more handler here below. advice: use group using {} for better readability
