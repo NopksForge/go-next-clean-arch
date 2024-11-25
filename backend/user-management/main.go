@@ -17,6 +17,7 @@ import (
 	"user-management/config"
 	"user-management/database"
 	"user-management/httpclient"
+	"user-management/kafka"
 	"user-management/logger"
 
 	"github.com/redis/go-redis/v9"
@@ -107,12 +108,14 @@ func router(cfg config.Config) (*gin.Engine, func()) {
 	cache := redis.NewClient(&redis.Options{
 		Addr: cfg.Cache.RedisURL,
 	})
+	producer := kafka.NewSyncProducerGuarantee(cfg.Kafka.Addrs)
 
 	{
 		userHTTPSrv := user.NewUserService(httpClient)
 		userStorage := user.NewStorage(db)
 		userStorageCache := user.NewStorageCache(cache)
-		h := user.NewHandler(userHTTPSrv, userStorage, userStorageCache)
+		userStorageKafka := user.NewStorageKafka(producer)
+		h := user.NewHandler(userHTTPSrv, userStorage, userStorageCache, userStorageKafka)
 		r.POST("/users/create", h.CreateUser)
 		r.GET("/users/:userId", h.GetUser)
 		r.GET("/users/list", h.GetAllUser)
