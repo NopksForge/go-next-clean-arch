@@ -1,13 +1,23 @@
 export interface User {
   id: string
-  name: string
   email: string
+  firstName: string
+  lastName: string
+  phone: string
+  role: string
+  updatedAt: string
+  isActive: boolean
 }
 
 export interface ApiUser {
   userId: string
-  userName: string
   userEmail: string
+  userFirstName: string
+  userLastName: string
+  userPhone: string
+  userRole: string
+  userUpdatedAt: string
+  isActive: boolean
 }
 
 export interface ApiResponse {

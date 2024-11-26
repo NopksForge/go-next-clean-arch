@@ -15,11 +15,11 @@ export function UserCard({ user, activeDropdown, setActiveDropdown, onEdit, onDe
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
             <span className="text-xl font-semibold text-gray-600 dark:text-gray-300">
-              {user.name.charAt(0)}
+              {user.firstName.charAt(0)}{user.lastName.charAt(0)}
             </span>
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white">{user.name}</h3>
+            <h3 className="font-semibold text-gray-900 dark:text-white">{user.firstName} {user.lastName}</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
           </div>
         </div>
