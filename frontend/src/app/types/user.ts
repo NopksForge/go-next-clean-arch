@@ -16,7 +16,7 @@ export interface ApiUser {
   userLastName: string
   userPhone: string
   userRole: string
-  userUpdatedAt: string
+  updatedAt: string
   isActive: boolean
 }
 

@@ -26,18 +26,18 @@ interface ApiResponse {
 
 // Add mock configuration
 const MOCK_USERS: User[] = [
-  { id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', email: 'john.doe@example.com', firstName: 'John', lastName: 'Doe', phone: '0812345678', role: 'Back End', updatedAt: '01/01/2022 12:00', isActive: true },
-  { id: 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', email: 'jane.smith@example.com', firstName: 'Jane', lastName: 'Smith', phone: '0823456789', role: 'Front End', updatedAt: '02/01/2022 12:00', isActive: true },
-  { id: 'c2eebc99-9c0b-4ef8-bb6d-6bb9bd380a13', email: 'bob.wilson@example.com', firstName: 'Bob', lastName: 'Wilson', phone: '0834567890', role: 'Full Stack', updatedAt: '03/01/2022 12:00', isActive: true },
-  { id: 'd3eebc99-9c0b-4ef8-bb6d-6bb9bd380a14', email: 'sarah.jones@example.com', firstName: 'Sarah', lastName: 'Jones', phone: '0845678901', role: 'Front End', updatedAt: '04/01/2022 12:00', isActive: true },
-  { id: 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', email: 'mike.brown@example.com', firstName: 'Mike', lastName: 'Brown', phone: '0856789012', role: 'Full Stack', updatedAt: '05/01/2022 12:00', isActive: true },
-  { id: 'f5eebc99-9c0b-4ef8-bb6d-6bb9bd380a16', email: 'lisa.taylor@example.com', firstName: 'Lisa', lastName: 'Taylor', phone: '0867890123', role: 'Full Stack', updatedAt: '06/01/2022 12:00', isActive: true },
-  { id: 'a6eebc99-9c0b-4ef8-bb6d-6bb9bd380a17', email: 'david.miller@example.com', firstName: 'David', lastName: 'Miller', phone: '0878901234', role: 'BU', updatedAt: '07/01/2022 12:00', isActive: true },
-  { id: 'b7eebc99-9c0b-4ef8-bb6d-6bb9bd380a18', email: 'emma.davis@example.com', firstName: 'Emma', lastName: 'Davis', phone: '0889012345', role: 'BA', updatedAt: '08/01/2022 12:00', isActive: true },
-  { id: 'c8eebc99-9c0b-4ef8-bb6d-6bb9bd380a19', email: 'tom.white@example.com', firstName: 'Tom', lastName: 'White', phone: '0890123456', role: 'BA', updatedAt: '09/01/2022 12:00', isActive: true },
-  { id: 'd9eebc99-9c0b-4ef8-bb6d-6bb9bd380a20', email: 'amy.garcia@example.com', firstName: 'Amy', lastName: 'Garcia', phone: '0801234567', role: 'Full Stack', updatedAt: '10/01/2022 12:00', isActive: false },
-  { id: 'e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a21', email: 'peter.wang@example.com', firstName: 'Peter', lastName: 'Wang', phone: '0812345670', role: 'Tester', updatedAt: '11/01/2022 12:00', isActive: true },
-  { id: 'f1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', email: 'mary.chen@example.com', firstName: 'Mary', lastName: 'Chen', phone: '0823456701', role: 'Tester', updatedAt: '12/01/2022 12:00', isActive: true },
+  { id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', email: 'john.doe@example.com', firstName: 'John', lastName: 'Doe', phone: '0812345678', role: 'Back End', updatedAt: '2024-11-26T01:56:44.345322Z', isActive: true },
+  { id: 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', email: 'jane.smith@example.com', firstName: 'Jane', lastName: 'Smith', phone: '0823456789', role: 'Front End', updatedAt: '2024-11-26T01:56:44.345322Z', isActive: true },
+  { id: 'c2eebc99-9c0b-4ef8-bb6d-6bb9bd380a13', email: 'bob.wilson@example.com', firstName: 'Bob', lastName: 'Wilson', phone: '0834567890', role: 'Full Stack', updatedAt: '2024-11-26T01:56:44.345322Z', isActive: true },
+  { id: 'd3eebc99-9c0b-4ef8-bb6d-6bb9bd380a14', email: 'sarah.jones@example.com', firstName: 'Sarah', lastName: 'Jones', phone: '0845678901', role: 'Front End', updatedAt: '2024-11-26T01:56:44.345322Z', isActive: true },
+  { id: 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', email: 'mike.brown@example.com', firstName: 'Mike', lastName: 'Brown', phone: '0856789012', role: 'Full Stack', updatedAt: '2024-11-26T01:56:44.345322Z', isActive: true },
+  { id: 'f5eebc99-9c0b-4ef8-bb6d-6bb9bd380a16', email: 'lisa.taylor@example.com', firstName: 'Lisa', lastName: 'Taylor', phone: '0867890123', role: 'Full Stack', updatedAt: '2024-11-26T01:56:44.345322Z', isActive: true },
+  { id: 'a6eebc99-9c0b-4ef8-bb6d-6bb9bd380a17', email: 'david.miller@example.com', firstName: 'David', lastName: 'Miller', phone: '0878901234', role: 'BU', updatedAt: '2024-11-26T01:56:44.345322Z', isActive: true },
+  { id: 'b7eebc99-9c0b-4ef8-bb6d-6bb9bd380a18', email: 'emma.davis@example.com', firstName: 'Emma', lastName: 'Davis', phone: '0889012345', role: 'BA', updatedAt: '2024-11-26T01:56:44.345322Z', isActive: true },
+  { id: 'c8eebc99-9c0b-4ef8-bb6d-6bb9bd380a19', email: 'tom.white@example.com', firstName: 'Tom', lastName: 'White', phone: '0890123456', role: 'BA', updatedAt: '2024-11-26T01:56:44.345322Z', isActive: true },
+  { id: 'd9eebc99-9c0b-4ef8-bb6d-6bb9bd380a20', email: 'amy.garcia@example.com', firstName: 'Amy', lastName: 'Garcia', phone: '0801234567', role: 'Full Stack', updatedAt: '2024-11-26T01:56:44.345322Z', isActive: false },
+  { id: 'e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a21', email: 'peter.wang@example.com', firstName: 'Peter', lastName: 'Wang', phone: '0812345670', role: 'Tester', updatedAt: '2024-11-26T01:56:44.345322Z', isActive: true },
+  { id: 'f1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', email: 'mary.chen@example.com', firstName: 'Mary', lastName: 'Chen', phone: '0823456701', role: 'Tester', updatedAt: '2024-11-26T01:56:44.345322Z', isActive: true },
 ]
 
 const IS_MOCK_ENABLED = process.env.NEXT_PUBLIC_USE_MOCK === 'true'
@@ -70,7 +70,7 @@ export default function UserManagement() {
           lastName: apiUser.userLastName,
           phone: apiUser.userPhone,
           role: apiUser.userRole,
-          updatedAt: apiUser.userUpdatedAt,
+          updatedAt: apiUser.userUpdatedAt || new Date().toISOString(),
           isActive: apiUser.isActive
         }));
         setUsers(transformedUsers);
@@ -202,7 +202,7 @@ export default function UserManagement() {
             userPhone: updatedUser.phone,
             userRole: updatedUser.role,
             userEmail: updatedUser.email,
-            userIsActive: updatedUser.isActive
+            isActive: updatedUser.isActive
           })
         });
 
@@ -249,7 +249,7 @@ export default function UserManagement() {
             userPhone: newUser.phone,
             userRole: newUser.role,
             userEmail: newUser.email,
-            userIsActive: newUser.isActive
+            isActive: newUser.isActive
           })
         });
 
@@ -266,7 +266,7 @@ export default function UserManagement() {
               phone: apiUser.userPhone,
               role: apiUser.userRole,
               email: apiUser.userEmail,
-              updatedAt: apiUser.userUpdatedAt,
+              updatedAt: apiUser.userUpdatedAt || new Date().toISOString(),
               isActive: apiUser.isActive
             }));
             setUsers(transformedUsers);
@@ -289,7 +289,7 @@ export default function UserManagement() {
 
   return (
     <div className="min-h-screen bg-gray-200 dark:bg-gray-900">
-      <div className="absolute top-4 right-4 z-50 flex items-center gap-4">
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-4">
         <RefreshButton onRefresh={fetchUsers} isLoading={loading} />
         <DarkModeToggle darkMode={darkMode} onToggle={toggleDarkMode} />
       </div>
