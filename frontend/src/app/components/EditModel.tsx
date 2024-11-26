@@ -209,13 +209,19 @@ export function EditModel({ editingUser, onSave, onClose, isCreating }: EditModa
 
             <div>
               <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={formData.isActive}
-                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="rounded border-gray-300"
-                />
-                <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Active User</span>
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Status</span>
+                <div
+                  onClick={(e) => setFormData({ ...formData, isActive: !formData.isActive })}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out cursor-pointer ${
+                    formData.isActive ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-600'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-200 ease-in-out ${
+                      formData.isActive ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </div>
               </label>
             </div>
           </div>
