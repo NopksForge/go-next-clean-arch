@@ -52,6 +52,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 		UserPhone:     req.UserPhone,
 		UserRole:      req.UserRole,
 		UpdatedAt:     &now,
+		IsActive:      *req.IsActive,
 	}
 
 	if err := h.store.UpdateUser(c.Request.Context(), user); err != nil {
@@ -75,4 +76,5 @@ type UpdateUserRequest struct {
 	UserLastName  string `json:"userLastName" validate:"required"`
 	UserPhone     string `json:"userPhone" validate:"required"`
 	UserRole      string `json:"userRole" validate:"required"`
+	IsActive      *bool  `json:"isActive" validate:"required"`
 }

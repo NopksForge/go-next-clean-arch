@@ -17,7 +17,7 @@ func NewStorage(db *pgxpool.Pool) *storage {
 }
 
 func (s *storage) CreateUser(ctx context.Context, data UserData) error {
-	_, err := s.db.Exec(ctx, "insert into users(user_id, user_email, user_first_name, user_last_name, user_phone, user_role, is_active) values($1, $2, $3, $4, $5, $6, $7)", data.UserId, data.UserEmail, data.UserFirstName, data.UserLastName, data.UserPhone, data.UserRole, data.IsActive)
+	_, err := s.db.Exec(ctx, "insert into users(user_id, user_email, user_first_name, user_last_name, user_phone_number, user_role, is_active) values($1, $2, $3, $4, $5, $6, $7)", data.UserId, data.UserEmail, data.UserFirstName, data.UserLastName, data.UserPhone, data.UserRole, data.IsActive)
 	return err
 }
 
