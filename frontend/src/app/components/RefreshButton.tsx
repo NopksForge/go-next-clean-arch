@@ -12,7 +12,9 @@ export function RefreshButton({ onRefresh, isLoading }: RefreshButtonProps) {
       aria-label="Refresh users list"
     >
       <svg 
-        className={`w-6 h-6 text-blue-600 dark:text-blue-400 ${isLoading ? 'animate-spin' : 'hover:rotate-180'}`}
+        className={`w-6 h-6 text-blue-600 dark:text-blue-400 ${
+          isLoading ? 'animate-spin' : 'transition-transform duration-300 hover:rotate-180'
+        }`}
         fill="none" 
         stroke="currentColor" 
         viewBox="0 0 24 24"

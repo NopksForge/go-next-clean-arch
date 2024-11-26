@@ -1,6 +1,7 @@
 package user
 
 import (
+	"time"
 	"user-management/app"
 	"user-management/logger"
 	"user-management/serror"
@@ -30,9 +31,13 @@ func (h *Handler) GetUser(c *gin.Context) {
 	}
 
 	app.ReturnSuccess(c, GetUserResponse{
-		UserId:    user.UserId.String(),
-		UserEmail: user.UserEmail,
-		UserName:  user.UserName,
+		UserId:        user.UserId.String(),
+		UserEmail:     user.UserEmail,
+		UserFirstName: user.UserFirstName,
+		UserLastName:  user.UserLastName,
+		UserPhone:     user.UserPhone,
+		UserRole:      user.UserRole,
+		IsActive:      user.IsActive,
 	})
 }
 
@@ -70,7 +75,12 @@ type GetUserRequest struct {
 }
 
 type GetUserResponse struct {
-	UserId    string `json:"userId"`
-	UserEmail string `json:"userEmail"`
-	UserName  string `json:"userName"`
+	UserId        string    `json:"userId"`
+	UserEmail     string    `json:"userEmail"`
+	UserFirstName string    `json:"userFirstName"`
+	UserLastName  string    `json:"userLastName"`
+	UserPhone     string    `json:"userPhone"`
+	UserRole      string    `json:"userRole"`
+	UpdatedAt     time.Time `json:"updatedAt"`
+	IsActive      bool      `json:"isActive"`
 }

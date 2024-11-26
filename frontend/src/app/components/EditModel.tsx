@@ -1,28 +1,70 @@
 import React, { useState, useEffect } from 'react'
 
 interface EditModalProps {
-  editingUser?: { id: string; name: string; email: string }
-  onSave: (user: { id?: string; name: string; email: string }) => void
+  editingUser?: {
+    id: string
+    firstName: string
+    lastName: string
+    email: string
+    phone: string
+    role: string
+    updatedAt: string
+    isActive: boolean
+  }
+  onSave: (user: {
+    id?: string
+    firstName: string
+    lastName: string
+    email: string
+    phone: string
+    role: string
+    updatedAt?: string
+    isActive: boolean
+  }) => void
   onClose: () => void
   isCreating?: boolean
 }
 
 export function EditModel({ editingUser, onSave, onClose, isCreating }: EditModalProps) {
-  const [formData, setFormData] = useState(editingUser || { id: '', name: '', email: '' })
-  const [errors, setErrors] = useState({ name: '', email: '' })
+  const [formData, setFormData] = useState({
+    id: editingUser?.id || '',
+    firstName: editingUser?.firstName || '',
+    lastName: editingUser?.lastName || '',
+    email: editingUser?.email || '',
+    phone: editingUser?.phone || '',
+    role: editingUser?.role || '',
+    updatedAt: editingUser?.updatedAt || '',
+    isActive: editingUser?.isActive ?? true
+  })
+  const [errors, setErrors] = useState({ firstName: '', lastName: '', email: '', phone: '', role: '' })
 
   useEffect(() => {
     if (editingUser) {
-      setFormData(editingUser)
+      setFormData({
+        ...editingUser,
+        isActive: editingUser.isActive ?? true
+      })
     }
   }, [editingUser])
 
   const validateForm = () => {
-    const newErrors = { name: '', email: '' }
+    const newErrors = { firstName: '', lastName: '', email: '', phone: '', role: '' }
     let isValid = true
 
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required'
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'First name is required'
+      isValid = false
+    }
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'Last name is required'
+      isValid = false
+    }
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required'
+      isValid = false
+    }
+    if (!formData.role.trim()) {
+      newErrors.role = 'Role is required'
       isValid = false
     }
 
@@ -56,24 +98,46 @@ export function EditModel({ editingUser, onSave, onClose, isCreating }: EditModa
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                Name
+                First Name
               </label>
               <input
                 type="text"
-                value={formData.name}
+                value={formData.firstName}
                 onChange={(e) => {
-                  setFormData({ ...formData, name: e.target.value })
-                  if (errors.name) setErrors({ ...errors, name: '' })
+                  setFormData({ ...formData, firstName: e.target.value })
+                  if (errors.firstName) setErrors({ ...errors, firstName: '' })
                 }}
                 className={`mt-1 block w-full rounded-lg border px-4 py-3 
                           transition duration-150 ease-in-out
                           focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-30
                           dark:bg-gray-700 text-gray-600 dark:text-gray-300
-                          ${errors.name ? 'border-red-500 dark:border-red-500' : 'border-gray-200 dark:border-gray-600'}`}
-                placeholder="Enter name"
+                          ${errors.firstName ? 'border-red-500 dark:border-red-500' : 'border-gray-200 dark:border-gray-600'}`}
+                placeholder="Enter first name"
               />
-              {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
+              {errors.firstName && <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>}
             </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                Last Name
+              </label>
+              <input
+                type="text"
+                value={formData.lastName}
+                onChange={(e) => {
+                  setFormData({ ...formData, lastName: e.target.value })
+                  if (errors.lastName) setErrors({ ...errors, lastName: '' })
+                }}
+                className={`mt-1 block w-full rounded-lg border px-4 py-3 
+                          transition duration-150 ease-in-out
+                          focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-30
+                          dark:bg-gray-700 text-gray-600 dark:text-gray-300
+                          ${errors.lastName ? 'border-red-500 dark:border-red-500' : 'border-gray-200 dark:border-gray-600'}`}
+                placeholder="Enter last name"
+              />
+              {errors.lastName && <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>}
+            </div>
+
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                 Email
@@ -93,6 +157,72 @@ export function EditModel({ editingUser, onSave, onClose, isCreating }: EditModa
                 placeholder="Enter email"
               />
               {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                Phone
+              </label>
+              <input
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => {
+                  setFormData({ ...formData, phone: e.target.value })
+                  if (errors.phone) setErrors({ ...errors, phone: '' })
+                }}
+                className={`mt-1 block w-full rounded-lg border px-4 py-3 
+                          transition duration-150 ease-in-out
+                          focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-30
+                          dark:bg-gray-700 text-gray-600 dark:text-gray-300
+                          ${errors.phone ? 'border-red-500 dark:border-red-500' : 'border-gray-200 dark:border-gray-600'}`}
+                placeholder="Enter phone number"
+              />
+              {errors.phone && <p className="mt-1 text-sm text-red-500">{errors.phone}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                Role
+              </label>
+              <select
+                value={formData.role}
+                onChange={(e) => {
+                  setFormData({ ...formData, role: e.target.value })
+                  if (errors.role) setErrors({ ...errors, role: '' })
+                }}
+                className={`mt-1 block w-full rounded-lg border px-4 py-3 
+                          transition duration-150 ease-in-out
+                          focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-30
+                          dark:bg-gray-700 text-gray-600 dark:text-gray-300
+                          ${errors.role ? 'border-red-500 dark:border-red-500' : 'border-gray-200 dark:border-gray-600'}`}
+              >
+                <option value="">Select a role</option>
+                <option value="Back End">Back End</option>
+                <option value="Front End">Front End</option>
+                <option value="Full Stack">Full Stack</option>
+                <option value="BA">BA</option>
+                <option value="BU">BU</option>
+                <option value="Tester">Tester</option>
+              </select>
+              {errors.role && <p className="mt-1 text-sm text-red-500">{errors.role}</p>}
+            </div>
+
+            <div>
+              <label className="flex items-center space-x-2">
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Status</span>
+                <div
+                  onClick={(e) => setFormData({ ...formData, isActive: !formData.isActive })}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out cursor-pointer ${
+                    formData.isActive ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-600'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-200 ease-in-out ${
+                      formData.isActive ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </div>
+              </label>
             </div>
           </div>
           <div className="mt-8 flex justify-end space-x-4">
@@ -120,4 +250,4 @@ export function EditModel({ editingUser, onSave, onClose, isCreating }: EditModa
       </div>
     </div>
   )
-} 
+}

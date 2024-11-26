@@ -2,7 +2,6 @@ package user
 
 import (
 	"encoding/json"
-	"time"
 	"user-management/app"
 	"user-management/logger"
 
@@ -27,11 +26,12 @@ func (h *Handler) CreateUser(c *gin.Context) {
 
 	userId := uuid.Must(uuid.NewV7())
 	user := UserData{
-		UserId:    userId,
-		UserName:  req.UserName,
-		UserEmail: req.UserEmail,
-		CreatedBy: "ADMIN",
-		CreatedAt: time.Now(),
+		UserId:        userId,
+		UserFirstName: req.UserFirstName,
+		UserLastName:  req.UserLastName,
+		UserPhone:     req.UserPhone,
+		UserRole:      req.UserRole,
+		UserEmail:     req.UserEmail,
 	}
 
 	userBytes, err := json.Marshal(user)
@@ -47,19 +47,25 @@ func (h *Handler) CreateUser(c *gin.Context) {
 	}
 
 	app.ReturnSuccess(c, CreateUserResponse{
-		UserId:    userId,
-		UserEmail: req.UserEmail,
-		UserName:  req.UserName,
+		UserId:        userId,
+		UserEmail:     req.UserEmail,
+		UserFirstName: req.UserFirstName,
+		UserLastName:  req.UserLastName,
 	})
 }
 
 type CreateUserRequest struct {
-	UserEmail string `json:"userEmail" validate:"required,email"`
-	UserName  string `json:"userName" validate:"required"`
+	UserEmail     string `json:"userEmail" validate:"required,email"`
+	UserFirstName string `json:"userFirstName" validate:"required"`
+	UserLastName  string `json:"userLastName" validate:"required"`
+	UserPhone     string `json:"userPhone" validate:"required"`
+	UserRole      string `json:"userRole" validate:"required"`
+	IsActive      bool   `json:"isActive" validate:"required"`
 }
 
 type CreateUserResponse struct {
-	UserId    uuid.UUID
-	UserEmail string
-	UserName  string
+	UserId        uuid.UUID
+	UserEmail     string
+	UserFirstName string
+	UserLastName  string
 }

@@ -17,20 +17,21 @@ func NewStorage(db *pgxpool.Pool) *storage {
 }
 
 func (s *storage) CreateUser(ctx context.Context, data UserData) error {
-	_, err := s.db.Exec(ctx, "insert into users(user_id, user_email, user_name, created_by) values($1, $2, $3, $4)", data.UserId, data.UserEmail, data.UserName, data.CreatedBy)
+	_, err := s.db.Exec(ctx, "insert into users(user_id, user_email, user_first_name, user_last_name, user_phone_number, user_role) values($1, $2, $3, $4, $5, $6)", data.UserId, data.UserEmail, data.UserFirstName, data.UserLastName, data.UserPhone, data.UserRole)
 	return err
 }
 
 func (s *storage) GetUserById(ctx context.Context, id string) (*UserData, error) {
 	var data UserData
-	if err := s.db.QueryRow(ctx, "select user_id, user_email, user_name, created_by, created_at, updated_by, updated_at from users where user_id = $1", id).Scan(
+	if err := s.db.QueryRow(ctx, "select user_id, user_email, user_first_name, user_last_name, user_phone_number, user_role, updated_at, is_active from users where user_id = $1", id).Scan(
 		&data.UserId,
 		&data.UserEmail,
-		&data.UserName,
-		&data.CreatedBy,
-		&data.CreatedAt,
-		&data.UpdatedBy,
+		&data.UserFirstName,
+		&data.UserLastName,
+		&data.UserPhone,
+		&data.UserRole,
 		&data.UpdatedAt,
+		&data.IsActive,
 	); err != nil {
 		return nil, err
 	}
@@ -39,7 +40,7 @@ func (s *storage) GetUserById(ctx context.Context, id string) (*UserData, error)
 
 func (s *storage) GetAllUser(ctx context.Context) ([]UserData, error) {
 	var users []UserData
-	rows, err := s.db.Query(ctx, "select user_id, user_email, user_name, created_by, created_at, updated_by, updated_at from users")
+	rows, err := s.db.Query(ctx, "select user_id, user_email, user_first_name, user_last_name, user_phone_number, user_role, updated_at, is_active from users")
 	if err != nil {
 		return nil, err
 	}
@@ -50,11 +51,12 @@ func (s *storage) GetAllUser(ctx context.Context) ([]UserData, error) {
 		err := rows.Scan(
 			&user.UserId,
 			&user.UserEmail,
-			&user.UserName,
-			&user.CreatedBy,
-			&user.CreatedAt,
-			&user.UpdatedBy,
+			&user.UserFirstName,
+			&user.UserLastName,
+			&user.UserPhone,
+			&user.UserRole,
 			&user.UpdatedAt,
+			&user.IsActive,
 		)
 		if err != nil {
 			return nil, err
@@ -70,7 +72,7 @@ func (s *storage) GetAllUser(ctx context.Context) ([]UserData, error) {
 }
 
 func (s *storage) UpdateUser(ctx context.Context, data UserData) error {
-	_, err := s.db.Exec(ctx, "update users set user_email = $1, user_name = $2, updated_by = $3, updated_at = $4 where user_id = $5", data.UserEmail, data.UserName, data.UpdatedBy, data.UpdatedAt, data.UserId)
+	_, err := s.db.Exec(ctx, "update users set user_email = $1, user_first_name = $2, user_last_name = $3, user_phone_number = $4, user_role = $5, updated_at = $6, is_active = $7 where user_id = $8", data.UserEmail, data.UserFirstName, data.UserLastName, data.UserPhone, data.UserRole, data.UpdatedAt, data.IsActive, data.UserId)
 	return err
 }
 
@@ -80,11 +82,12 @@ func (s *storage) DeleteUser(ctx context.Context, id string) error {
 }
 
 type UserData struct {
-	UserId    uuid.UUID
-	UserEmail string
-	UserName  string
-	CreatedBy string
-	CreatedAt time.Time
-	UpdatedBy *string
-	UpdatedAt *time.Time
+	UserId        uuid.UUID
+	UserEmail     string
+	UserFirstName string
+	UserLastName  string
+	UserPhone     string
+	UserRole      string
+	UpdatedAt     *time.Time
+	IsActive      bool
 }
