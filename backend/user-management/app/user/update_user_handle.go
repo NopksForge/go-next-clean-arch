@@ -42,15 +42,16 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	updateUser := "ADMIN"
 	now := time.Now()
 
 	user := UserData{
-		UserId:    uuid.MustParse(req.UserId),
-		UserEmail: req.UserEmail,
-		UserName:  req.UserName,
-		UpdatedBy: &updateUser,
-		UpdatedAt: &now,
+		UserId:        uuid.MustParse(req.UserId),
+		UserEmail:     req.UserEmail,
+		UserFirstName: req.UserFirstName,
+		UserLastName:  req.UserLastName,
+		UserPhone:     req.UserPhone,
+		UserRole:      req.UserRole,
+		UpdatedAt:     &now,
 	}
 
 	if err := h.store.UpdateUser(c.Request.Context(), user); err != nil {
@@ -68,7 +69,10 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 }
 
 type UpdateUserRequest struct {
-	UserId    string `uri:"userId" validate:"required,uuid"`
-	UserEmail string `json:"userEmail" validate:"required,email"`
-	UserName  string `json:"userName" validate:"required"`
+	UserId        string `uri:"userId" validate:"required,uuid"`
+	UserEmail     string `json:"userEmail" validate:"required,email"`
+	UserFirstName string `json:"userFirstName" validate:"required"`
+	UserLastName  string `json:"userLastName" validate:"required"`
+	UserPhone     string `json:"userPhone" validate:"required"`
+	UserRole      string `json:"userRole" validate:"required"`
 }

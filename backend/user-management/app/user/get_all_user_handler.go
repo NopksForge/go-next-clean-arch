@@ -1,6 +1,7 @@
 package user
 
 import (
+	"time"
 	"user-management/app"
 
 	"github.com/gin-gonic/gin"
@@ -17,9 +18,14 @@ func (h *Handler) GetAllUser(c *gin.Context) {
 	responseData := make(GetAllUserResponse, len(allUserData))
 	for i, user := range allUserData {
 		responseData[i] = Userdata{
-			UserId:    user.UserId.String(),
-			UserEmail: user.UserEmail,
-			UserName:  user.UserName,
+			UserId:        user.UserId.String(),
+			UserEmail:     user.UserEmail,
+			UserFirstName: user.UserFirstName,
+			UserLastName:  user.UserLastName,
+			UserPhone:     user.UserPhone,
+			UserRole:      user.UserRole,
+			UpdatedAt:     *user.UpdatedAt,
+			IsActive:      user.IsActive,
 		}
 	}
 
@@ -27,9 +33,14 @@ func (h *Handler) GetAllUser(c *gin.Context) {
 }
 
 type Userdata struct {
-	UserId    string `json:"userId"`
-	UserEmail string `json:"userEmail"`
-	UserName  string `json:"userName"`
+	UserId        string    `json:"userId"`
+	UserEmail     string    `json:"userEmail"`
+	UserFirstName string    `json:"userFirstName"`
+	UserLastName  string    `json:"userLastName"`
+	UserPhone     string    `json:"userPhone"`
+	UserRole      string    `json:"userRole"`
+	UpdatedAt     time.Time `json:"updatedAt"`
+	IsActive      bool      `json:"isActive"`
 }
 
 type GetAllUserResponse []Userdata
