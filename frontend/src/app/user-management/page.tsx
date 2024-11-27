@@ -19,7 +19,7 @@ interface ApiResponse {
     userLastName: string;
     userPhone: string;
     userRole: string;
-    userUpdatedAt: string;
+    updatedAt: string;
     isActive: boolean;
   }>;
 }
@@ -70,9 +70,10 @@ export default function UserManagement() {
           lastName: apiUser.userLastName,
           phone: apiUser.userPhone,
           role: apiUser.userRole,
-          updatedAt: apiUser.userUpdatedAt || new Date().toISOString(),
+          updatedAt: apiUser.updatedAt,
           isActive: apiUser.isActive
         }));
+        console.log(transformedUsers)
         setUsers(transformedUsers);
       } else {
         console.error('Error fetching users:', result.message);
@@ -266,7 +267,7 @@ export default function UserManagement() {
               phone: apiUser.userPhone,
               role: apiUser.userRole,
               email: apiUser.userEmail,
-              updatedAt: apiUser.userUpdatedAt || new Date().toISOString(),
+              updatedAt: apiUser.updatedAt,
               isActive: apiUser.isActive
             }));
             setUsers(transformedUsers);
