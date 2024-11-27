@@ -1,0 +1,18 @@
+networks:
+  training_network:
+    driver: bridge
+
+services:
+  user-web-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - training_network
