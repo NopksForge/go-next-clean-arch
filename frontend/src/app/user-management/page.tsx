@@ -43,6 +43,28 @@ const MOCK_USERS: User[] = [
 const IS_MOCK_ENABLED = process.env.NEXT_PUBLIC_USE_MOCK === 'true'
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
 
+const transformApiUsers = (apiUsers: ApiResponse['data']): User[] => {
+  return apiUsers.map((apiUser) => ({
+    id: apiUser.userId,
+    email: apiUser.userEmail,
+    firstName: apiUser.userFirstName,
+    lastName: apiUser.userLastName,
+    phone: apiUser.userPhone,
+    role: apiUser.userRole,
+    updatedAt: apiUser.updatedAt,
+    isActive: apiUser.isActive
+  }));
+};
+
+const fetchUsersList = async (): Promise<User[]> => {
+  const response = await fetch(`${API_BASE_URL}/users/list`);
+  const result: ApiResponse = await response.json();
+  if (result.code === 0) {
+    return transformApiUsers(result.data);
+  }
+  throw new Error(result.message);
+};
+
 export default function UserManagement() {
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
@@ -60,31 +82,16 @@ export default function UserManagement() {
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}/users/list`);
-      const result: ApiResponse = await response.json();
-      if (result.code === 0) {
-        const transformedUsers: User[] = result.data.map((apiUser) => ({
-          id: apiUser.userId,
-          email: apiUser.userEmail,
-          firstName: apiUser.userFirstName,
-          lastName: apiUser.userLastName,
-          phone: apiUser.userPhone,
-          role: apiUser.userRole,
-          updatedAt: apiUser.updatedAt,
-          isActive: apiUser.isActive
-        }));
-        console.log(transformedUsers)
-        setUsers(transformedUsers);
-      } else {
-        console.error('Error fetching users:', result.message);
-      }
+      const transformedUsers = await fetchUsersList();
+      console.log(transformedUsers);
+      setUsers(transformedUsers);
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
-      const now = new Date()
-      const hours = now.getHours().toString().padStart(2, '0')
-      const minutes = now.getMinutes().toString().padStart(2, '0')
-      setLastUpdateTime(`${hours}:${minutes}`)
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      setLastUpdateTime(`${hours}:${minutes}`);
       setLoading(false);
     }
   };
@@ -209,9 +216,9 @@ export default function UserManagement() {
 
         const result = await response.json();
         if (result.code === 0) {
-          setUsers(users.map(user => 
-            user.id === updatedUser.id ? updatedUser : user
-          ))
+          // Refresh user list after successful update
+          const transformedUsers = await fetchUsersList();
+          setUsers(transformedUsers);
         } else {
           console.error('Error updating user:', result.message);
         }
@@ -257,21 +264,8 @@ export default function UserManagement() {
         const result = await response.json();
         if (result.code === 0) {
           // Refresh user list after successful creation
-          const fetchResponse = await fetch(`${API_BASE_URL}/users/list`);
-          const fetchResult: ApiResponse = await fetchResponse.json();
-          if (fetchResult.code === 0) {
-            const transformedUsers: User[] = fetchResult.data.map(apiUser => ({
-              id: apiUser.userId,
-              firstName: apiUser.userFirstName,
-              lastName: apiUser.userLastName,
-              phone: apiUser.userPhone,
-              role: apiUser.userRole,
-              email: apiUser.userEmail,
-              updatedAt: apiUser.updatedAt,
-              isActive: apiUser.isActive
-            }));
-            setUsers(transformedUsers);
-          }
+          const transformedUsers = await fetchUsersList();
+          setUsers(transformedUsers);
         } else {
           console.error('Error creating user:', result.message);
         }
