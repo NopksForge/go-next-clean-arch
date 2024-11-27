@@ -1,5 +1,5 @@
 # Docker commands for backend
-.PHONY: be-docker-up be-docker-down
+.PHONY: be-docker-up be-docker-down be-docker-restart
 
 be-docker-up:
 	docker compose -f ./backend/docker-compose.local.yaml up --build --wait
@@ -7,14 +7,18 @@ be-docker-up:
 be-docker-down:
 	docker compose -f ./backend/docker-compose.local.yaml down --remove-orphans > /dev/null 2>&1
 
+be-docker-restart: be-docker-down be-docker-up
+
 # Docker commands for frontend
-.PHONY: fe-docker-up fe-docker-down
+.PHONY: fe-docker-up fe-docker-down fe-docker-restart
 
 fe-docker-up:
 	docker compose -f ./frontend/docker-compose.local.yaml up --build --wait
 
 fe-docker-down:
 	docker compose -f ./frontend/docker-compose.local.yaml down --remove-orphans > /dev/null 2>&1
+
+fe-docker-restart: fe-docker-down fe-docker-up
 
 # Combined docker commands
 .PHONY: docker-up docker-down docker-restart docker-clean docker-fresh
