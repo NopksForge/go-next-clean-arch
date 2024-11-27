@@ -32,6 +32,7 @@ func (h *Handler) CreateUser(c *gin.Context) {
 		UserPhone:     req.UserPhone,
 		UserRole:      req.UserRole,
 		UserEmail:     req.UserEmail,
+		IsActive:      req.IsActive,
 	}
 
 	userBytes, err := json.Marshal(user)
