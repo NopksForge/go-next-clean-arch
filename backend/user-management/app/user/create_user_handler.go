@@ -32,7 +32,7 @@ func (h *Handler) CreateUser(c *gin.Context) {
 		UserPhone:     req.UserPhone,
 		UserRole:      req.UserRole,
 		UserEmail:     req.UserEmail,
-		IsActive:      req.IsActive,
+		IsActive:      *req.IsActive,
 	}
 
 	userBytes, err := json.Marshal(user)
@@ -61,7 +61,7 @@ type CreateUserRequest struct {
 	UserLastName  string `json:"userLastName" validate:"required"`
 	UserPhone     string `json:"userPhone" validate:"required"`
 	UserRole      string `json:"userRole" validate:"required"`
-	IsActive      bool   `json:"isActive" validate:"required"`
+	IsActive      *bool  `json:"isActive" validate:"required"`
 }
 
 type CreateUserResponse struct {
