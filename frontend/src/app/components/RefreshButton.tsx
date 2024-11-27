@@ -13,7 +13,7 @@ export function RefreshButton({ onRefresh, isLoading }: RefreshButtonProps) {
     >
       <svg 
         className={`w-6 h-6 text-blue-600 dark:text-blue-400 ${
-          isLoading ? 'animate-spin' : 'transition-transform duration-300 hover:rotate-180'
+          isLoading ? 'animate-spin' : 'transition-transform duration-300 hover:-rotate-180'
         }`}
         fill="none" 
         stroke="currentColor" 
