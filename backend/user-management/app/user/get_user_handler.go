@@ -71,7 +71,7 @@ func (h *Handler) getUserFromStorage(c *gin.Context, userId string) (*UserData, 
 }
 
 type GetUserRequest struct {
-	UserId string `uri:"userId" validate:"required,uuid"`
+	UserId string `uri:"userId" binding:"required,uuid"`
 }
 
 type GetUserResponse struct {

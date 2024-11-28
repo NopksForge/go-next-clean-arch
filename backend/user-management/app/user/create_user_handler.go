@@ -6,7 +6,6 @@ import (
 	"user-management/logger"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator"
 	"github.com/google/uuid"
 )
 
@@ -18,13 +17,12 @@ func (h *Handler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	validate := validator.New()
-	if err := validate.Struct(req); err != nil {
-		app.ReturnBadRequest(c, err.Error())
+	userId, err := uuid.NewV7()
+	if err != nil {
+		logger.Error("failed to generate UUID", "error", err)
+		app.ReturnInternalError(c, "failed to generate user ID")
 		return
 	}
-
-	userId := uuid.Must(uuid.NewV7())
 	user := UserData{
 		UserId:        userId,
 		UserFirstName: req.UserFirstName,
@@ -56,12 +54,12 @@ func (h *Handler) CreateUser(c *gin.Context) {
 }
 
 type CreateUserRequest struct {
-	UserEmail     string `json:"userEmail" validate:"required,email"`
-	UserFirstName string `json:"userFirstName" validate:"required"`
-	UserLastName  string `json:"userLastName" validate:"required"`
-	UserPhone     string `json:"userPhone" validate:"required"`
-	UserRole      string `json:"userRole" validate:"required"`
-	IsActive      *bool  `json:"isActive" validate:"required"`
+	UserEmail     string `json:"userEmail" binding:"required,email"`
+	UserFirstName string `json:"userFirstName" binding:"required"`
+	UserLastName  string `json:"userLastName" binding:"required"`
+	UserPhone     string `json:"userPhone" binding:"required,len=10"`
+	UserRole      string `json:"userRole" binding:"required"`
+	IsActive      *bool  `json:"isActive" binding:"required"`
 }
 
 type CreateUserResponse struct {

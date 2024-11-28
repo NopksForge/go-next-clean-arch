@@ -6,7 +6,6 @@ import (
 	"user-management/logger"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator"
 	"github.com/google/uuid"
 )
 
@@ -19,12 +18,6 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		app.ReturnBadRequest(c, err.Error())
-		return
-	}
-
-	validate := validator.New()
-	if err := validate.Struct(req); err != nil {
 		app.ReturnBadRequest(c, err.Error())
 		return
 	}
@@ -70,11 +63,11 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 }
 
 type UpdateUserRequest struct {
-	UserId        string `uri:"userId" validate:"required,uuid"`
-	UserEmail     string `json:"userEmail" validate:"required,email"`
-	UserFirstName string `json:"userFirstName" validate:"required"`
-	UserLastName  string `json:"userLastName" validate:"required"`
-	UserPhone     string `json:"userPhone" validate:"required"`
-	UserRole      string `json:"userRole" validate:"required"`
-	IsActive      *bool  `json:"isActive" validate:"required"`
+	UserId        string `uri:"userId" binding:"required,uuid"`
+	UserEmail     string `json:"userEmail" binding:"required,email"`
+	UserFirstName string `json:"userFirstName" binding:"required"`
+	UserLastName  string `json:"userLastName" binding:"required"`
+	UserPhone     string `json:"userPhone" binding:"required,len=10"`
+	UserRole      string `json:"userRole" binding:"required"`
+	IsActive      *bool  `json:"isActive" binding:"required"`
 }
